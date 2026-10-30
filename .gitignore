@@ -43,9 +43,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# PlantUML directory
-/plantuml/
-
 # Environment files
 .env
 # Respaldo local antes de compactar el código
