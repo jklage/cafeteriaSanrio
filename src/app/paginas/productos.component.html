@@ -1,0 +1,152 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="chococat.ico" alt="Chococat">
+
+  <h1>Productos del menú</h1>
+</section>
+
+@if (mensaje()) {
+  <div class="mensaje mensaje-exito">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<section class="metricas">
+  <article class="metrica metrica-rosa">
+    <span class="metrica-etiqueta">Productos en el menú</span>
+    <strong class="metrica-valor">{{ productos().length }}</strong>
+  </article>
+
+  <article class="metrica metrica-cielo">
+    <span class="metrica-etiqueta">Categorías</span>
+    <strong class="metrica-valor">{{ categorias().length }}</strong>
+  </article>
+
+  <article class="metrica metrica-verde">
+    <span class="metrica-etiqueta">Ganancia promedio por pieza</span>
+    <strong class="metrica-valor">{{ margenPromedio() | currency:'MXN':'symbol-narrow' }}</strong>
+  </article>
+</section>
+
+<div class="grid-formulario">
+
+  <!-- Lista de productos disponibles -->
+  <section class="panel">
+    <div class="panel-titulo">
+      <h2>Menú actual</h2>
+      <span>Solo productos disponibles</span>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th class="numero">Precio</th>
+            <th class="numero">Costo</th>
+            <th class="numero">Ganancia</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (producto of productos(); track producto.id_producto) {
+            <tr [class.editando]="producto.id_producto === idEditando()">
+              <td>
+                <div class="producto-celda">
+                  @if (producto.imagen) {
+                    <img class="foto-miniatura" [src]="producto.imagen" [alt]="producto.nombre">
+                  }
+                  <div>
+                    <b>{{ producto.nombre }}</b>
+                    <span class="detalle">{{ producto.codigo }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>{{ producto.categoria ?? 'Sin categoría' }}</td>
+              <td class="numero">{{ producto.precio_venta | currency:'MXN':'symbol-narrow' }}</td>
+              <td class="numero">{{ producto.costo | currency:'MXN':'symbol-narrow' }}</td>
+              <td class="numero"><b>{{ margen(producto) | currency:'MXN':'symbol-narrow' }}</b></td>
+              <td>
+                <div class="acciones-fila">
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="editar(producto)">Editar</button>
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="darDeBaja(producto)">Dar de baja</button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="sin-datos">No hay productos en el menú.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Formulario para agregar o editar -->
+  <section class="panel">
+    <h2>{{ idEditando() === null ? 'Agregar producto' : 'Editar producto' }}</h2>
+
+    <form class="formulario-campos" (ngSubmit)="guardar()" #forma="ngForm">
+      <label class="campo campo-completo">
+        Código
+        <input name="codigo" [(ngModel)]="formulario.codigo" placeholder="CAF-002" required>
+      </label>
+
+      <label class="campo campo-completo">
+        Nombre
+        <input name="nombre" [(ngModel)]="formulario.nombre" placeholder="My Melody Frappé" minlength="3" required>
+      </label>
+
+      <label class="campo campo-completo">
+        Descripción
+        <input name="descripcion" [(ngModel)]="formulario.descripcion" placeholder="Opcional">
+      </label>
+
+      <label class="campo campo-completo">
+        Categoría
+        <select name="id_categoria" [(ngModel)]="formulario.id_categoria">
+          <option [ngValue]="null">Sin categoría</option>
+          @for (categoria of categorias(); track categoria.id_categoria) {
+            <option [ngValue]="categoria.id_categoria">{{ categoria.nombre }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="campo">
+        Precio de venta
+        <input name="precio_venta" type="number" min="0.01" step="0.01" [(ngModel)]="formulario.precio_venta" required>
+      </label>
+
+      <label class="campo">
+        Costo
+        <input name="costo" type="number" min="0" step="0.01" [(ngModel)]="formulario.costo" required>
+      </label>
+
+      <!-- La imagen es el icono del producto en Ventas; se guarda al presionar Agregar o Guardar cambios -->
+      <div class="campo campo-completo">
+        Imagen (icono del producto)
+        @if (imagen(); as foto) {
+          <img class="foto-producto" [src]="foto" alt="Vista previa de la imagen">
+        }
+        <div class="acciones-fila">
+          <label class="boton boton-secundario boton-chico">
+            {{ imagen() ? 'Cambiar imagen' : 'Subir imagen' }}
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" (change)="elegirImagen($event)" hidden>
+          </label>
+          @if (imagen()) {
+            <button type="button" class="boton boton-secundario boton-chico" (click)="imagen.set(null)">Quitar imagen</button>
+          }
+        </div>
+      </div>
+
+      <div class="acciones campo-completo">
+        <button type="submit" class="boton boton-principal" [disabled]="forma.invalid">
+          {{ idEditando() === null ? 'Agregar' : 'Guardar cambios' }}
+        </button>
+        @if (idEditando() !== null) {
+          <button type="button" class="boton boton-secundario" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+    </form>
+  </section>
+</div>

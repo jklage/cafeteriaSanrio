@@ -1,0 +1,42 @@
+<!-- Barra superior: fecha a la izquierda, usuario y botón para salir a la derecha -->
+<div class="aviso-superior">
+  <span>Operaciones del {{ fechaHoy }}</span>
+
+  @if (usuario(); as usuario) {
+    <span class="sesion">
+      {{ usuario.nombre }}
+      <span class="sesion-rol">{{ usuario.rol }}</span>
+      <button type="button" class="sesion-salir" (click)="cerrarSesion()">Cerrar sesión</button>
+    </span>
+  }
+</div>
+
+<!-- Marca centrada -->
+<header class="encabezado">
+  <a [routerLink]="auth.rutaDeInicio()" class="marca">
+    <img class="marca-icono" src="hellokitty.ico" alt="">
+    <span class="marca-texto">Café Sanrio</span>
+  </a>
+  <p class="marca-subtitulo">Sistema de operaciones de la cafetería</p>
+</header>
+
+<!-- Navegación entre módulos: solo los que el rol del usuario puede abrir -->
+<nav class="navegacion" aria-label="Módulos del sistema">
+  @for (modulo of modulosVisibles(); track modulo.ruta) {
+    <a class="nav-modulo" [routerLink]="modulo.ruta" routerLinkActive="activo">
+      <span class="nav-circulo {{ modulo.color }}">
+        @if (modulo.icono.endsWith('.ico')) {
+          <img class="personaje" [src]="modulo.icono" alt="">
+        } @else {
+          {{ modulo.icono }}
+        }
+      </span>
+      <span>{{ modulo.nombre }}</span>
+    </a>
+  }
+</nav>
+
+<!-- Aquí Angular dibuja el módulo de la ruta actual -->
+<main class="contenido">
+  <router-outlet />
+</main>

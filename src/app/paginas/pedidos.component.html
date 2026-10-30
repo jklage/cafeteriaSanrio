@@ -1,0 +1,42 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="pochaco.ico" alt="Pochacco">
+  
+  <h1>Pedidos</h1>
+</section>
+
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<div class="tablero-encabezado">
+  <span>{{ porEntregar() }} pedido(s) por entregar</span>
+  <button type="button" class="boton boton-secundario boton-chico" (click)="cargarPedidos()">Actualizar</button>
+</div>
+
+<div class="tablero">
+  @for (columna of columnas; track columna.estado) {
+    <section class="columna">
+      <div class="columna-titulo {{ columna.color }}">
+        <h2>{{ columna.estado }}</h2>
+        <span>{{ pedidosEn(columna.estado).length }}</span>
+      </div>
+
+      @for (pedido of pedidosEn(columna.estado); track pedido.id_venta) {
+        <article class="tarjeta-pedido">
+          <div class="tarjeta-encabezado">
+            <b>#{{ pedido.id_venta }}</b>
+            <small>{{ pedido.fecha_venta | date:'HH:mm' }}</small>
+          </div>
+          <p>{{ pedido.productos }}</p>
+          <small>{{ pedido.cliente_nombre }}</small>
+
+          @if (columna.accion) {
+            <button type="button" class="boton boton-principal boton-chico" (click)="avanzar(pedido)">{{ columna.accion }}</button>
+          }
+        </article>
+      } @empty {
+        <p class="sin-datos">Sin pedidos.</p>
+      }
+    </section>
+  }
+</div>

@@ -1,0 +1,68 @@
+.panel-filtro {
+  margin-bottom: 20px;
+}
+
+.resultados {
+  margin-bottom: 20px;
+}
+
+.filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+/* Barra horizontal: su ancho es el porcentaje respecto al mejor día */
+.barra-fila {
+  display: grid;
+  grid-template-columns: 110px 1fr 190px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.barra-dia {
+  font-weight: 700;
+}
+
+.barra-fondo {
+  height: 18px;
+  border-radius: 999px;
+  background: var(--rosa-claro);
+  overflow: hidden;
+}
+
+.barra {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--rosa);
+}
+
+.barra-total {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.reporte-tablas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+@media (max-width: 700px) {
+  .barra-fila {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .barra-total {
+    text-align: left;
+  }
+
+  .reporte-tablas {
+    grid-template-columns: 1fr;
+  }
+}

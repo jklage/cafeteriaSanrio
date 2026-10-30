@@ -1,0 +1,3 @@
+Resumen: es un ERP web modular para controlar ventas, inventario, clientes, finanzas básicas y asistencia del personal en una cafetería. Lo llamaría ERP ligero o prototipo de ERP, porque, por lo que muestra el código actual, todavía no cubre de extremo a extremo áreas como compras y recepción de mercancía, contabilidad completa o gestión integral de proveedores.
+
+Forma de implementar código: No usar emojis; implementar líneas de explicación en el código de forma que sean concisas, directas, y no largas, se deben introducir cada cierto tiempo (para que no sean redundantes); se debe de escribir código de manera entendible, usar lo necesario, no mas allá de lo que se ve en código ya escrito (esto debido a que un docente va verificar el trabajo).

@@ -1,0 +1,53 @@
+<main class="login-pagina">
+  <section class="login-tarjeta" aria-labelledby="login-titulo">
+
+    <!-- Marca: misma que el encabezado del sistema -->
+    <span class="login-icono"><img class="personaje" src="hellokitty.ico" alt=""></span>
+    <p class="login-marca">Café Sanrio</p>
+    <h1 id="login-titulo">Inicia sesión</h1>
+    <p class="login-texto">Entra con tu cuenta del personal para usar el sistema.</p>
+
+    <form class="login-formulario" (ngSubmit)="iniciarSesion()" #formulario="ngForm">
+      <label class="campo">
+        Correo electrónico
+        <input
+          name="correo"
+          type="email"
+          [(ngModel)]="correo"
+          placeholder="tu@cafesanrio.com"
+          autocomplete="username"
+          required>
+      </label>
+
+      <label class="campo">
+        Contraseña
+        <input
+          name="contrasena"
+          type="password"
+          [(ngModel)]="contrasena"
+          placeholder="Escribe tu contraseña"
+          autocomplete="current-password"
+          required>
+      </label>
+
+      @if (error()) {
+        <div class="mensaje mensaje-error" role="alert">{{ error() }}</div>
+      }
+
+      <button
+        type="submit"
+        class="boton boton-principal"
+        [disabled]="formulario.invalid || cargando()">
+        {{ cargando() ? 'Entrando…' : 'Iniciar sesión' }}
+      </button>
+    </form>
+
+    <!-- Cuentas creadas por sql/04-usuarios.sql -->
+    <aside class="login-demo" aria-label="Cuentas de prueba">
+      <b>Cuentas de prueba</b>
+      <span>Administración: admin&#64;cafesanrio.com / Admin123!</span>
+      <span>Caja: cajero&#64;cafesanrio.com / Cajero123!</span>
+    </aside>
+
+  </section>
+</main>

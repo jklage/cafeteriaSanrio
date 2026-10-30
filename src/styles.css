@@ -1,1 +1,484 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
+ 
+ 
+/* ---------- 1. Paleta de colores ---------- */
+:root {
+  --rojo: #e60033;          /* rojo del logotipo: botones principales */
+  --rojo-oscuro: #c2002b;
+  --rosa: #f59ab9;
+  --rosa-claro: #fff0f5;
+  --amarillo-claro: #fff6d8;
+  --cielo-claro: #eaf5fc;
+  --morado-claro: #f2eefc;
+  --verde-claro: #e7f6ea;
+ 
+  --texto: #173a64;         /* azul marino que usa sanrio.com */
+  --texto-suave: #5b6b82;
+  --borde: #e2e9f1;
+  --fondo: #ffffff;
+  --fondo-suave: #f7f9fc;
+ 
+  --radio-grande: 24px;
+  --radio-chico: 12px;
+}
+ 
+ 
+/* ---------- 2. Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+ 
+body {
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+ 
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 900;
+  line-height: 1.2;
+}
+ 
+p {
+  margin: 0;
+}
+ 
+button, input, select {
+  font: inherit;
+  color: inherit;
+}
+ 
+:focus-visible {
+  outline: 3px solid var(--rosa);
+  outline-offset: 2px;
+}
+ 
+ 
+/* ---------- 3. Encabezado de cada módulo ---------- */
+.modulo-encabezado {
+  display: flow-root;   /* contiene al personaje flotante */
+  margin-bottom: 28px;
+}
+ 
+.modulo-encabezado h1 {
+  font-size: 2rem;
+}
+ 
+.modulo-encabezado p {
+  margin-top: 6px;
+  color: var(--texto-suave);
+}
+ 
+.caso-uso {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--rosa-claro);
+  color: var(--rojo-oscuro);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+ 
+ 
+/* ---------- 4. Paneles ---------- */
+.panel {
+  padding: 24px;
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio-grande);
+  background: var(--fondo);
+}
+ 
+.panel + .panel {
+  margin-top: 20px;
+}
+ 
+.panel-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+ 
+.panel-titulo h2 {
+  font-size: 1.25rem;
+}
+ 
+.panel-titulo span {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+ 
+ 
+/* ---------- 5. Tarjetas de métricas ---------- */
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+ 
+.metrica {
+  padding: 20px 22px;
+  border-radius: var(--radio-grande);
+}
+ 
+.metrica-etiqueta {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+ 
+.metrica-valor {
+  display: block;
+  margin-top: 4px;
+  font-size: 2rem;
+  font-weight: 900;
+}
+ 
+.metrica-rosa     { background: var(--rosa-claro); }
+.metrica-amarillo { background: var(--amarillo-claro); }
+.metrica-cielo    { background: var(--cielo-claro); }
+.metrica-morado   { background: var(--morado-claro); }
+.metrica-verde    { background: var(--verde-claro); }
+ 
+ 
+/* ---------- 6. Tablas ---------- */
+.tabla-contenedor {
+  overflow-x: auto;
+}
+ 
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+ 
+.tabla th {
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--borde);
+  color: var(--texto-suave);
+  font-weight: 800;
+  text-align: left;
+}
+ 
+.tabla td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--borde);
+}
+ 
+.tabla tr:last-child td {
+  border-bottom: 0;
+}
+ 
+.tabla .detalle {
+  display: block;
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+ 
+.tabla .numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+ 
+.sin-datos {
+  padding: 32px;
+  color: var(--texto-suave);
+  text-align: center;
+}
+ 
+ 
+/* ---------- 7. Etiquetas de estado ---------- */
+.estado {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+ 
+.estado-ok      { background: var(--verde-claro);    color: #2f7a41; }
+.estado-alerta  { background: var(--amarillo-claro); color: #8a6200; }
+.estado-peligro { background: var(--rosa-claro);     color: var(--rojo-oscuro); }
+.estado-info    { background: var(--cielo-claro);    color: #2b6a91; }
+ 
+ 
+/* ---------- 8. Botones ---------- */
+.boton {
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+ 
+.boton-principal {
+  background: var(--rojo);
+  color: #ffffff;
+}
+ 
+.boton-principal:hover {
+  background: var(--rojo-oscuro);
+}
+ 
+.boton-secundario {
+  border: 1.5px solid var(--borde);
+  background: var(--fondo);
+}
+ 
+.boton-secundario:hover {
+  border-color: var(--rosa);
+}
+ 
+.boton-chico {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+ 
+.boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+ 
+ 
+/* ---------- 9. Mensajes de éxito y error ---------- */
+.mensaje {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: var(--radio-chico);
+  font-weight: 700;
+}
+ 
+.mensaje-exito { background: var(--verde-claro); color: #2f7a41; }
+.mensaje-error { background: var(--rosa-claro);  color: var(--rojo-oscuro); }
+ 
+ 
+/* ---------- 10. Campos de formulario ---------- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+ 
+.campo input,
+.campo select {
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--fondo);
+}
+ 
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--rosa);
+  outline: none;
+}
+ 
+ 
+/* ---------- 11. Pantallas con tabla y formulario ---------- */
+/* Tabla a la izquierda y formulario a la derecha; en pantallas chicas, uno debajo del otro */
+.grid-formulario {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.grid-formulario .panel + .panel {
+  margin-top: 0;
+}
+
+.grid-formulario + .panel {
+  margin-top: 20px;
+}
+
+.formulario-campos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.acciones-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Grupo de casillas (por ejemplo, categorías de un insumo) */
+.casillas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1.5px solid var(--borde);
+  border-radius: 14px;
+}
+
+.casillas legend {
+  padding: 0 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.casillas label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Varios paneles apilados en una misma columna */
+.columna-paneles {
+  display: grid;
+  align-content: start;
+  gap: 20px;
+}
+
+/* Resalta la fila que se está editando */
+.tabla tr.editando td {
+  background: var(--rosa-claro);
+}
+
+@media (max-width: 900px) {
+  .grid-formulario {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Lista con buscador para elegir un cliente o proveedor registrado */
+.selector-busqueda {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lista-busqueda {
+  max-height: 180px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  border: 1.5px solid var(--borde);
+  border-radius: 14px;
+}
+
+.lista-busqueda button {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 8px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--borde);
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lista-busqueda button.seleccionado {
+  background: var(--rosa-claro);
+}
+
+.lista-busqueda small {
+  color: var(--texto-suave);
+}
+
+
+/* ---------- 12. Personajes Sanrio ---------- */
+/* Las imágenes están en public/ y cada módulo tiene su personaje */
+.personaje {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+}
+
+.personaje-encabezado {
+  float: right;
+  width: 120px;
+  height: 120px;
+  padding: 10px;
+  border-radius: 50%;
+  background: var(--rosa-claro);
+  object-fit: contain;
+}
+
+/* Cuando una tabla o lista está vacía se muestra a Hello Kitty arriba del texto */
+.sin-datos::before {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 8px;
+  background: url('/hellokitty.ico') center / contain no-repeat;
+  opacity: 0.7;
+}
+
+
+/* ---------- Imagen de productos ---------- */
+.producto-celda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.foto-miniatura {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radio-chico);
+  object-fit: cover;
+}
+
+.foto-producto {
+  width: 140px;
+  height: 140px;
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio-chico);
+  object-fit: cover;
+}
+
+label.boton {
+  display: inline-block;
+}
+
+/* ---------- 13. Accesibilidad y celulares ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+ 
+@media (max-width: 640px) {
+  .modulo-encabezado h1 {
+    font-size: 1.6rem;
+  }
+
+  .personaje-encabezado {
+    width: 88px;
+    height: 88px;
+  }
+}

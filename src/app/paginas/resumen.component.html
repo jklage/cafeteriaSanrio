@@ -1,0 +1,57 @@
+<section class="modulo-encabezado">
+  <h1>Resumen del día</h1>
+</section>
+
+<!-- Métricas principales -->
+<section class="metricas">
+  <article class="metrica metrica-rosa">
+    <span class="metrica-etiqueta">Ventas de hoy</span>
+    <strong class="metrica-valor">{{ ventasHoy().total | currency:'MXN':'symbol-narrow' }}</strong>
+    <span>{{ ventasHoy().tickets }} tickets</span>
+  </article>
+
+  <article class="metrica metrica-amarillo">
+    <span class="metrica-etiqueta">Insumos por reabastecer</span>
+    <strong class="metrica-valor">{{ insumosEnAlerta() }}</strong>
+    <span>de {{ insumos().length }} insumos</span>
+  </article>
+
+  <article class="metrica metrica-cielo">
+    <span class="metrica-etiqueta">Por cobrar (AR)</span>
+    <strong class="metrica-valor">{{ porCobrar() | currency:'MXN':'symbol-narrow' }}</strong>
+    <span>Facturas pendientes de cobro</span>
+  </article>
+
+  <article class="metrica metrica-verde">
+    <span class="metrica-etiqueta">Personal en turno</span>
+    <strong class="metrica-valor">{{ empleadosPresentes() }}</strong>
+    <span>de {{ empleados().length }} empleados</span>
+  </article>
+</section>
+
+<!-- Accesos rápidos a las tareas más comunes -->
+<section class="panel">
+  <div class="panel-titulo">
+    <h2>Accesos rápidos</h2>
+  </div>
+
+  <div class="accesos">
+    <a routerLink="/ventas" class="acceso">
+      <span class="acceso-icono metrica-rosa"><img class="personaje" src="hellokitty.ico" alt=""></span>
+      <b>Registrar una venta</b>
+      <small>Abrir el punto de venta</small>
+    </a>
+
+    <a routerLink="/inventario" class="acceso">
+      <span class="acceso-icono metrica-amarillo"><img class="personaje" src="pumpumpurin.ico" alt=""></span>
+      <b>Revisar existencias</b>
+      <small>{{ insumosEnAlerta() }} insumos en alerta</small>
+    </a>
+
+    <a routerLink="/personal" class="acceso">
+      <span class="acceso-icono metrica-verde"><img class="personaje" src="keroppi.ico" alt=""></span>
+      <b>Registrar asistencia</b>
+      <small>Entrada y salida del personal</small>
+    </a>
+  </div>
+</section>

@@ -1,0 +1,134 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="mymelody.ico" alt="My Melody">
+  <h1>Facturas y cuentas</h1>
+</section>
+
+@if (mensaje()) {
+  <div class="mensaje mensaje-exito">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<section class="metricas">
+  <article class="metrica metrica-morado">
+    <span class="metrica-etiqueta">Por pagar (AP)</span>
+    <strong class="metrica-valor">{{ totalPorPagar() | currency:'MXN':'symbol-narrow' }}</strong>
+  </article>
+
+  <article class="metrica metrica-cielo">
+    <span class="metrica-etiqueta">Por cobrar (AR)</span>
+    <strong class="metrica-valor">{{ totalPorCobrar() | currency:'MXN':'symbol-narrow' }}</strong>
+  </article>
+</section>
+
+<div class="grid-formulario">
+
+  <section class="panel">
+    <div class="panel-titulo">
+      <h2>Facturas</h2>
+      <span>Primero las pendientes, ordenadas por vencimiento</span>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Folio</th>
+            <th>Proveedor o cliente</th>
+            <th>Vence</th>
+            <th class="numero">Importe</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (factura of facturas(); track factura.id_factura) {
+            <tr>
+              <td>
+                <b>{{ factura.folio }}</b>
+                <span class="detalle">{{ factura.tipo === 'AP' ? 'Por pagar' : 'Por cobrar' }}</span>
+              </td>
+              <td>{{ factura.tercero }}</td>
+              <td>{{ factura.fecha_vencimiento | date:'dd/MM/yyyy' }}</td>
+              <td class="numero"><b>{{ factura.importe | currency:'MXN':'symbol-narrow' }}</b></td>
+              <td>
+                @if (factura.estado === 'Pagada') {
+                  <span class="estado estado-ok">Pagada</span>
+                } @else {
+                  <span class="estado estado-alerta">{{ factura.estado }}</span>
+                }
+              </td>
+              <td>
+                @if (factura.estado === 'Pendiente') {
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="pagar(factura)">
+                    {{ factura.tipo === 'AP' ? 'Pagar' : 'Cobrar' }}
+                  </button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="sin-datos">No hay facturas registradas.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Registrar factura</h2>
+
+    <form class="formulario-campos" (ngSubmit)="guardar()" #forma="ngForm">
+      <label class="campo">
+        Tipo
+        <select name="tipo" [(ngModel)]="formulario.tipo" (ngModelChange)="cambiarTipo()">
+          <option value="AP">Por pagar</option>
+          <option value="AR">Por cobrar</option>
+        </select>
+      </label>
+
+      <label class="campo">
+        Folio
+        <input name="folio" value="Se genera solo" disabled>
+      </label>
+
+      <!-- Solo se eligen proveedores o clientes ya registrados -->
+      <div class="campo-completo selector-busqueda">
+        <label class="campo">
+          {{ formulario.tipo === 'AP' ? 'Proveedor' : 'Cliente' }}
+          <input name="busquedaTercero" type="search" [(ngModel)]="busquedaTercero" placeholder="Buscar por nombre o contacto">
+        </label>
+
+        <ul class="lista-busqueda">
+          @for (tercero of tercerosFiltrados(); track tercero.nombre) {
+            <li>
+              <button
+                type="button"
+                [class.seleccionado]="tercero.nombre === formulario.tercero"
+                (click)="formulario.tercero = tercero.nombre">
+                <b>{{ tercero.nombre }}</b>
+                <small>{{ tercero.detalle }}</small>
+              </button>
+            </li>
+          } @empty {
+            <li class="sin-datos">No hay resultados.</li>
+          }
+        </ul>
+      </div>
+
+      <label class="campo">
+        Vence
+        <input name="fecha_vencimiento" type="date" [(ngModel)]="formulario.fecha_vencimiento" required>
+      </label>
+
+      <label class="campo">
+        Importe
+        <input name="importe" type="number" min="0.01" step="0.01" [(ngModel)]="formulario.importe" required>
+      </label>
+
+      <div class="acciones campo-completo">
+        <button type="submit" class="boton boton-principal" [disabled]="forma.invalid || !formulario.tercero">Registrar</button>
+      </div>
+    </form>
+  </section>
+</div>

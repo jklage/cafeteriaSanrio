@@ -1,0 +1,134 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="keroppi.ico" alt="Keroppi">
+  
+  <h1>Recursos humanos</h1>
+</section>
+
+@if (mensaje()) {
+  <div class="mensaje mensaje-exito">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<section class="metricas">
+  <article class="metrica metrica-verde">
+    <span class="metrica-etiqueta">En turno</span>
+    <strong class="metrica-valor">{{ enTurno() }}</strong>
+  </article>
+
+  <article class="metrica metrica-amarillo">
+    <span class="metrica-etiqueta">Sin registro hoy</span>
+    <strong class="metrica-valor">{{ sinRegistro() }}</strong>
+  </article>
+
+  <article class="metrica metrica-cielo">
+    <span class="metrica-etiqueta">Total de empleados</span>
+    <strong class="metrica-valor">{{ empleados().length }}</strong>
+  </article>
+</section>
+
+<div class="grid-formulario">
+
+<section class="panel">
+  <div class="panel-titulo">
+    <h2>Asistencia de hoy</h2>
+  </div>
+
+  <div class="tabla-contenedor">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Empleado</th>
+          <th>Turno</th>
+          <th>Entrada / Salida</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (empleado of empleados(); track empleado.id_empleado) {
+          <tr [class.editando]="empleado.id_empleado === idEditando()">
+            <td>
+              <b>{{ empleado.nombre }}</b>
+              <span class="detalle">{{ empleado.puesto }}</span>
+            </td>
+            <td>{{ empleado.turno }}</td>
+            <td>{{ empleado.hora_entrada ?? '—' }} / {{ empleado.hora_salida ?? '—' }}</td>
+            <td>
+              @switch (estadoAsistencia(empleado)) {
+                @case ('En turno') {
+                  <span class="estado estado-ok">En turno</span>
+                }
+                @case ('Turno terminado') {
+                  <span class="estado estado-info">Turno terminado</span>
+                }
+                @default {
+                  <span class="estado estado-alerta">Sin registro</span>
+                }
+              }
+            </td>
+            <td>
+              <div class="acciones-fila">
+                @if (empleado.hora_salida === null) {
+                  <button
+                    type="button"
+                    class="boton boton-secundario boton-chico"
+                    (click)="registrarAsistencia(empleado)">
+                    {{ empleado.hora_entrada === null ? 'Registrar entrada' : 'Registrar salida' }}
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    class="boton boton-secundario boton-chico"
+                    (click)="deshacerSalida(empleado)">
+                    Deshacer salida
+                  </button>
+                }
+                <button type="button" class="boton boton-secundario boton-chico" (click)="editar(empleado)">Editar</button>
+                <button type="button" class="boton boton-secundario boton-chico" (click)="eliminar(empleado)">Eliminar</button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="sin-datos">No hay empleados registrados.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>{{ idEditando() === null ? 'Registrar empleado' : 'Editar empleado' }}</h2>
+
+  <form class="formulario-campos" (ngSubmit)="guardar()" #forma="ngForm">
+    <label class="campo campo-completo">
+      Nombre
+      <input name="nombre" [(ngModel)]="formulario.nombre" placeholder="Laura Méndez" minlength="3" required>
+    </label>
+
+    <label class="campo">
+      Puesto
+      <input name="puesto" [(ngModel)]="formulario.puesto" placeholder="Barista" required>
+    </label>
+
+    <label class="campo">
+      Turno
+      <select name="turno" [(ngModel)]="formulario.turno">
+        @for (turno of turnos; track turno) {
+          <option [value]="turno">{{ turno }}</option>
+        }
+      </select>
+    </label>
+
+    <div class="acciones campo-completo">
+      <button type="submit" class="boton boton-principal" [disabled]="forma.invalid">
+        {{ idEditando() === null ? 'Registrar' : 'Guardar cambios' }}
+      </button>
+      @if (idEditando() !== null) {
+        <button type="button" class="boton boton-secundario" (click)="cancelar()">Cancelar</button>
+      }
+    </div>
+  </form>
+</section>
+</div>

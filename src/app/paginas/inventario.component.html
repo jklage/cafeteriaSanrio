@@ -1,0 +1,213 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="pumpumpurin.ico" alt="Pompompurin">
+  
+  <h1>Inventario y alertas</h1>
+</section>
+
+@if (mensaje()) {
+  <div class="mensaje mensaje-exito">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<section class="metricas">
+  <article class="metrica metrica-amarillo">
+    <span class="metrica-etiqueta">Por reabastecer</span>
+    <strong class="metrica-valor">{{ insumosEnAlerta() }}</strong>
+  </article>
+
+  <article class="metrica metrica-verde">
+    <span class="metrica-etiqueta">En rango</span>
+    <strong class="metrica-valor">{{ insumos().length - insumosEnAlerta() }}</strong>
+  </article>
+
+  <article class="metrica metrica-cielo">
+    <span class="metrica-etiqueta">Proveedores activos</span>
+    <strong class="metrica-valor">{{ proveedores().length }}</strong>
+  </article>
+</section>
+
+<div class="grid-formulario">
+
+  <section class="panel">
+    <div class="panel-titulo">
+      <h2>Insumos registrados</h2>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Insumo</th>
+            <th>Proveedor</th>
+            <th class="numero">Existencia</th>
+            <th class="numero">Mínimo</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (insumo of insumos(); track insumo.id_insumo) {
+            <tr [class.editando]="insumo.id_insumo === entrada.id_insumo || insumo.id_insumo === idEditando()">
+              <td>
+                <b>{{ insumo.nombre }}</b>
+                <span class="detalle">{{ insumo.unidad }} · {{ nombreCategorias(insumo) }}</span>
+              </td>
+              <td>{{ insumo.proveedor ?? 'Sin proveedor' }}</td>
+              <td class="numero">{{ insumo.stock_actual }}</td>
+              <td class="numero">{{ insumo.stock_minimo }}</td>
+              <td>
+                @if (insumo.requiere_reabasto) {
+                  <span class="estado estado-alerta">Reabastecer</span>
+                } @else {
+                  <span class="estado estado-ok">En rango</span>
+                }
+              </td>
+              <td>
+                <div class="acciones-fila">
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="prepararEntrada(insumo)">Registrar entrada</button>
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="editar(insumo)">Editar</button>
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="borrar(insumo)">Borrar</button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="sin-datos">No hay insumos registrados.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="columna-paneles">
+
+    <!-- Mercancía que llega del proveedor -->
+    <section class="panel">
+      <h2>Entrada de mercancía</h2>
+
+      <form class="formulario-campos" (ngSubmit)="registrarEntrada()" #formaEntrada="ngForm">
+        <label class="campo campo-completo">
+          Insumo
+          <select name="id_insumo" [(ngModel)]="entrada.id_insumo" required>
+            <option [ngValue]="null" disabled>Elige un insumo</option>
+            @for (insumo of insumos(); track insumo.id_insumo) {
+              <option [ngValue]="insumo.id_insumo">{{ insumo.nombre }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="campo">
+          Cantidad {{ unidadSeleccionada() ? '(' + unidadSeleccionada() + ')' : '' }}
+          <input name="cantidad" type="number" [min]="paso(unidadSeleccionada())" [step]="paso(unidadSeleccionada())" [(ngModel)]="entrada.cantidad" required>
+        </label>
+
+        <label class="campo">
+          Costo total
+          <input name="costo_total" type="number" min="0" step="0.01" [(ngModel)]="entrada.costo_total" placeholder="Opcional">
+        </label>
+
+        <div class="acciones campo-completo">
+          <button type="submit" class="boton boton-principal" [disabled]="formaEntrada.invalid">Sumar al stock</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Alta o edición de un insumo -->
+    <section class="panel">
+      <h2>{{ idEditando() === null ? 'Nuevo insumo' : 'Editar insumo' }}</h2>
+
+      <form class="formulario-campos" (ngSubmit)="guardarInsumo()" #formaInsumo="ngForm">
+        <label class="campo campo-completo">
+          Nombre
+          <input name="nombre" [(ngModel)]="formulario.nombre" placeholder="Crema batida" minlength="3" required>
+        </label>
+
+        <label class="campo campo-completo">
+          Unidad
+          <select name="unidad" [(ngModel)]="formulario.unidad" required>
+            @for (unidad of unidades; track unidad) {
+              <option [value]="unidad">{{ unidad }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="campo">
+          Existencia {{ idEditando() === null ? 'inicial' : '' }}
+          <input name="stock_actual" type="number" min="0" [step]="paso(formulario.unidad)" [(ngModel)]="formulario.stock_actual" placeholder="0">
+        </label>
+
+        <label class="campo">
+          Mínimo
+          <input name="stock_minimo" type="number" min="0" [step]="paso(formulario.unidad)" [(ngModel)]="formulario.stock_minimo" required>
+        </label>
+
+        <!-- En ventas el insumo solo aparece para los productos de estas categorías -->
+        <fieldset class="casillas campo-completo">
+          <legend>Se puede agregar a</legend>
+          @for (categoria of categorias(); track categoria.id_categoria) {
+            <label>
+              <input type="checkbox"
+                [checked]="formulario.categorias.includes(categoria.id_categoria)"
+                (change)="cambiarCategoria(categoria.id_categoria)">
+              {{ categoria.nombre }}
+            </label>
+          }
+        </fieldset>
+
+        <label class="campo campo-completo">
+          Proveedor
+          <select name="id_proveedor" [(ngModel)]="formulario.id_proveedor">
+            <option [ngValue]="null">Sin proveedor</option>
+            @for (proveedor of proveedores(); track proveedor.id_proveedor) {
+              <option [ngValue]="proveedor.id_proveedor">{{ proveedor.nombre }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="acciones campo-completo">
+          <button type="submit" class="boton boton-principal" [disabled]="formaInsumo.invalid || formulario.categorias.length === 0">
+            {{ idEditando() === null ? 'Registrar insumo' : 'Guardar cambios' }}
+          </button>
+          @if (idEditando() !== null) {
+            <button type="button" class="boton boton-secundario" (click)="cancelar()">Cancelar</button>
+          }
+        </div>
+      </form>
+    </section>
+  </div>
+</div>
+
+<!-- Evidencia: entradas guardadas en la base de datos -->
+<section class="panel">
+  <div class="panel-titulo">
+    <h2>Últimas entradas de mercancía</h2>
+  </div>
+
+  <div class="tabla-contenedor">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Insumo</th>
+          <th>Proveedor</th>
+          <th class="numero">Cantidad</th>
+          <th class="numero">Costo</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (registro of entradas(); track registro.id_entrada) {
+          <tr>
+            <td>{{ registro.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td><b>{{ registro.insumo }}</b></td>
+            <td>{{ registro.proveedor ?? 'Sin proveedor' }}</td>
+            <td class="numero">{{ registro.cantidad }} {{ registro.unidad }}</td>
+            <td class="numero">{{ registro.costo_total === null ? '—' : (registro.costo_total | currency:'MXN':'symbol-narrow') }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="sin-datos">Todavía no hay entradas registradas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

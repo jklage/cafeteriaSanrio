@@ -1,0 +1,156 @@
+/* ---------- Barra superior ---------- */
+.aviso-superior {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 8px 24px;
+  background: var(--rosa-claro);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sesion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sesion-rol {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--fondo);
+  color: var(--rojo-oscuro);
+  font-size: 0.8rem;
+}
+
+.sesion-salir {
+  padding: 4px 12px;
+  border: 1.5px solid var(--rosa);
+  border-radius: 999px;
+  background: transparent;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sesion-salir:hover {
+  background: var(--fondo);
+}
+
+
+/* ---------- Marca ---------- */
+.encabezado {
+  padding: 28px 16px 8px;
+  text-align: center;
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--rojo);
+  text-decoration: none;
+}
+
+.marca-icono {
+  width: 72px;
+  height: 72px;
+}
+
+.marca-texto {
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.marca-subtitulo {
+  margin-top: 2px;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
+
+/* ---------- Navegación con círculos ---------- */
+.navegacion {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 16px 16px 24px;
+  border-bottom: 1.5px solid var(--borde);
+  overflow-x: auto;
+}
+
+.nav-modulo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 96px;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.nav-circulo {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  transition: transform 0.15s;
+}
+
+.nav-modulo:hover .nav-circulo {
+  transform: scale(1.06);
+}
+
+.nav-modulo.activo {
+  color: var(--texto);
+  font-weight: 900;
+}
+
+.nav-modulo.activo .nav-circulo {
+  border-color: var(--texto);
+}
+
+.circulo-rojo     { background: #ffe1e8; }
+.circulo-rosa     { background: var(--rosa-claro); }
+.circulo-amarillo { background: var(--amarillo-claro); }
+.circulo-cielo    { background: var(--cielo-claro); }
+.circulo-morado   { background: var(--morado-claro); }
+.circulo-verde    { background: var(--verde-claro); }
+
+
+/* ---------- Contenido ---------- */
+.contenido {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 64px;
+}
+
+
+/* ---------- Celulares ---------- */
+@media (max-width: 640px) {
+  .aviso-superior {
+    justify-content: center;
+    padding: 8px 16px;
+  }
+
+  .marca-texto {
+    font-size: 1.8rem;
+  }
+
+  .navegacion {
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .contenido {
+    padding: 24px 16px 48px;
+  }
+}

@@ -1,0 +1,87 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="cinamon.ico" alt="Cinnamoroll">
+  <h1>Clientes</h1>
+</section>
+
+@if (mensaje()) {
+  <div class="mensaje mensaje-exito">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<div class="grid-formulario">
+
+  <section class="panel">
+    <div class="panel-titulo">
+      <h2>Clientes registrados</h2>
+      <label class="campo">
+        <input [(ngModel)]="busqueda" placeholder="Buscar por nombre" aria-label="Buscar cliente por nombre">
+      </label>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Contacto</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cliente of clientesFiltrados(); track cliente.id_cliente) {
+            <tr [class.editando]="cliente.id_cliente === idEditando()">
+              <td>
+                <b>{{ cliente.nombre }}</b>
+                <span class="detalle">ID {{ cliente.id_cliente }}</span>
+              </td>
+              <td>
+                {{ cliente.correo ?? 'Sin correo' }}
+                <span class="detalle">{{ cliente.telefono }}</span>
+              </td>
+              <td>
+                <div class="acciones-fila">
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="editar(cliente)">Editar</button>
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="eliminar(cliente)">Eliminar</button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" class="sin-datos">No se encontraron clientes.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>{{ idEditando() === null ? 'Registrar cliente' : 'Editar cliente' }}</h2>
+
+    <form class="formulario-campos" (ngSubmit)="guardar()" #forma="ngForm">
+      <label class="campo campo-completo">
+        Nombre
+        <input name="nombre" [(ngModel)]="formulario.nombre" placeholder="María González" minlength="3" required>
+      </label>
+
+      <label class="campo">
+        Teléfono
+        <input name="telefono" [(ngModel)]="formulario.telefono" placeholder="555-0102">
+      </label>
+
+      <label class="campo">
+        Correo
+        <input name="correo" type="email" [(ngModel)]="formulario.correo" placeholder="cliente@correo.com">
+      </label>
+
+      <div class="acciones campo-completo">
+        <button type="submit" class="boton boton-principal" [disabled]="forma.invalid">
+          {{ idEditando() === null ? 'Registrar' : 'Guardar cambios' }}
+        </button>
+        @if (idEditando() !== null) {
+          <button type="button" class="boton boton-secundario" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+    </form>
+  </section>
+</div>

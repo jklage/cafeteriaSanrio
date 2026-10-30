@@ -1,0 +1,247 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="hellokitty.ico" alt="Hello Kitty">
+  <h1>Punto de venta</h1>
+</section>
+
+@if (mensaje()) {
+  <div class="mensaje mensaje-exito">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<div class="pos-grid">
+
+  <!-- Menú: al hacer clic en un producto se agrega al ticket -->
+  <section class="panel">
+    <div class="panel-titulo">
+      <h2>Menú</h2>
+      <span>{{ productos().length }} productos</span>
+    </div>
+
+    <div class="catalogo">
+      @for (producto of productos(); track producto.id_producto) {
+        <button
+          type="button"
+          class="producto"
+          [class.seleccionado]="producto.id_producto === productoSeleccionado()?.id_producto"
+          (click)="seleccionarProducto(producto)">
+          <span class="producto-icono">
+            @if (producto.imagen) {
+              <img [src]="producto.imagen" alt="">
+            } @else {
+              {{ producto.nombre.charAt(0) }}
+            }
+          </span>
+          <span class="producto-nombre">{{ producto.nombre }}</span>
+          <span class="producto-precio">{{ producto.precio_venta | currency:'MXN':'symbol-narrow' }}</span>
+        </button>
+      } @empty {
+        <p class="sin-datos">No hay productos registrados.</p>
+      }
+    </div>
+  </section>
+
+  <!-- Ticket de la venta actual -->
+  <section class="panel ticket">
+
+    <!-- Paso 1: el producto elegido en el menú, con su cantidad y extras -->
+    <h2>Producto elegido</h2>
+
+    @if (productoSeleccionado(); as producto) {
+      <div class="ticket-producto">
+        <span class="producto-icono">
+          @if (producto.imagen) {
+            <img [src]="producto.imagen" alt="">
+          } @else {
+            {{ producto.nombre.charAt(0) }}
+          }
+        </span>
+        <div>
+          <b>{{ producto.nombre }}</b>
+          <small>{{ producto.codigo }} · {{ producto.precio_venta | currency:'MXN':'symbol-narrow' }}</small>
+        </div>
+      </div>
+    } @else {
+      <p class="sin-datos">Elige un producto del menú.</p>
+    }
+
+    <div class="insumos-venta">
+      <div class="subtitulo-seccion">
+        <h3>Agrega insumos</h3>
+        <span>Máximo 5 por insumo</span>
+      </div>
+      @for (insumo of insumosDelProducto(); track insumo.id_insumo) {
+        <div class="insumo-opcion">
+          <div>
+            <b>{{ insumo.nombre }}</b>
+            <small>{{ insumo.unidad }} · quedan {{ insumo.stock_actual }}</small>
+          </div>
+          <div class="control-cantidad" [attr.aria-label]="'Cantidad de ' + insumo.nombre">
+            <button type="button" (click)="cambiarCantidadInsumo(insumo, -1)" [disabled]="cantidadInsumo(insumo.id_insumo) === 0">−</button>
+            <strong>{{ cantidadInsumo(insumo.id_insumo) }}</strong>
+            <button type="button" (click)="cambiarCantidadInsumo(insumo, 1)" [disabled]="cantidadInsumo(insumo.id_insumo) >= maximaCantidadInsumo(insumo)">+</button>
+          </div>
+        </div>
+      } @empty {
+        <p class="sin-datos">Este producto no tiene insumos extra.</p>
+      }
+    </div>
+
+    <div class="agregar-linea">
+      <label class="campo">
+        Cantidad
+        <input type="number" min="1" step="1" [(ngModel)]="cantidad">
+      </label>
+      <button
+        type="button"
+        class="boton boton-secundario"
+        [disabled]="!productoSeleccionado()"
+        (click)="agregarAlTicket()">
+        Agregar al ticket
+      </button>
+    </div>
+
+    <!-- Paso 2: el ticket con todas las líneas -->
+    <div class="subtitulo-seccion">
+      <h2>Ticket</h2>
+      <span>{{ articulos() }} artículo(s)</span>
+    </div>
+
+    <ul class="ticket-lineas">
+      @for (linea of ticket(); track $index) {
+        <li>
+          <div>
+            <b>{{ linea.cantidad }} × {{ linea.producto.nombre }}</b>
+            @if (linea.descripcionInsumos) {
+              <small>{{ linea.descripcionInsumos }}</small>
+            }
+          </div>
+          <span>{{ linea.producto.precio_venta * linea.cantidad | currency:'MXN':'symbol-narrow' }}</span>
+          <button type="button" class="quitar" (click)="quitarDelTicket($index)" [attr.aria-label]="'Quitar ' + linea.producto.nombre">Quitar</button>
+        </li>
+      } @empty {
+        <li class="sin-datos">El ticket está vacío.</li>
+      }
+    </ul>
+
+    <div class="ticket-campos">
+      <!-- Solo se vende a clientes registrados en el módulo Clientes -->
+      <div class="campo-completo selector-busqueda">
+        <label class="campo">
+          Cliente
+          <input type="search" [(ngModel)]="busquedaCliente" placeholder="Buscar por nombre, teléfono o correo">
+        </label>
+
+        <ul class="lista-busqueda">
+          @for (cliente of clientesFiltrados(); track cliente.id_cliente) {
+            <li>
+              <button
+                type="button"
+                [class.seleccionado]="cliente.id_cliente === clienteSeleccionado()?.id_cliente"
+                (click)="clienteSeleccionado.set(cliente)">
+                <b>{{ cliente.nombre }}</b>
+                <small>{{ cliente.telefono ?? cliente.correo ?? 'Sin contacto' }}</small>
+              </button>
+            </li>
+          } @empty {
+            <li class="sin-datos">No hay clientes con ese dato.</li>
+          }
+        </ul>
+      </div>
+
+      <label class="campo campo-completo">
+        Método de pago
+        <select [(ngModel)]="metodoPago">
+          @for (metodo of metodosPago; track metodo) {
+            <option [value]="metodo">{{ metodo }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="ticket-total">
+      <span>Total</span>
+      <strong>{{ total() | currency:'MXN':'symbol-narrow' }}</strong>
+    </div>
+
+    <!-- Con PayPal el cobro lo hace su botón; con los demás métodos se confirma aquí -->
+    @if (metodoPago === 'PayPal') {
+      @if (ticket().length === 0) {
+        <p class="sin-datos">Agrega productos al ticket para pagar con PayPal.</p>
+      } @else if (paypalListo()) {
+        <paypal-button type="pay" (click)="pagarConPayPal()"></paypal-button>
+      } @else {
+        <p class="sin-datos">{{ avisoPayPal() }}</p>
+      }
+    } @else {
+      <button
+        type="button"
+        class="boton boton-principal"
+        [disabled]="ticket().length === 0 || !clienteSeleccionado()"
+        (click)="registrarVenta()">
+        Cobrar ticket
+      </button>
+    }
+  </section>
+</div>
+
+<!-- Evidencia: ventas guardadas en la base de datos -->
+<section class="panel">
+  <div class="panel-titulo">
+    <h2>Ventas guardadas</h2>
+  </div>
+
+  @if (ventaFactura(); as venta) {
+    <form class="envio-factura" (ngSubmit)="enviarFactura()">
+      <label class="campo">
+        Enviar la factura XML de la venta #{{ venta.id_venta }} a
+        <input name="correoFactura" type="email" [(ngModel)]="correoFactura" placeholder="cliente@correo.com" required>
+      </label>
+      <button type="submit" class="boton boton-principal">Enviar</button>
+      <button type="button" class="boton boton-secundario" (click)="ventaFactura.set(null)">Cancelar</button>
+    </form>
+  }
+
+  <div class="tabla-contenedor">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Venta</th>
+          <th>Cliente</th>
+          <th>Productos</th>
+          <th class="numero">Total</th>
+          <th>Pago</th>
+          <th>Pedido</th>
+          <th>Factura</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (venta of ventas(); track venta.id_venta) {
+          <tr>
+            <td><b>#{{ venta.id_venta }}</b></td>
+            <td>{{ venta.cliente_nombre }}</td>
+            <td>{{ venta.productos }}</td>
+            <td class="numero"><b>{{ venta.total | currency:'MXN':'symbol-narrow' }}</b></td>
+            <td>{{ venta.metodo_pago }}</td>
+            <td>
+              @switch (venta.estado_pedido) {
+                @case ('Pendiente') { <span class="estado estado-alerta">Pendiente</span> }
+                @case ('Preparando') { <span class="estado estado-info">Preparando</span> }
+                @default { <span class="estado estado-ok">Entregado</span> }
+              }
+            </td>
+            <td>
+              <div class="acciones-fila">
+                <a class="boton boton-secundario boton-chico" href="/api/ventas/{{ venta.id_venta }}/xml">XML</a>
+                <button type="button" class="boton boton-secundario boton-chico" (click)="ventaFactura.set(venta)">Enviar</button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7" class="sin-datos">Todavía no hay ventas registradas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,267 @@
+.pos-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  align-items: start;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+
+/* ---------- Menú de productos ---------- */
+.catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.producto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border: 2px solid var(--borde);
+  border-radius: 20px;
+  background: var(--fondo);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.producto:hover {
+  border-color: var(--rosa);
+}
+
+.producto.seleccionado {
+  border-color: var(--rojo);
+  background: var(--rosa-claro);
+}
+
+.producto-icono {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--rosa-claro);
+  color: var(--rojo);
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+/* La imagen del producto llena el círculo */
+.producto-icono img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.producto.seleccionado .producto-icono {
+  background: var(--fondo);
+}
+
+.producto-nombre {
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.producto-precio {
+  color: var(--rojo);
+  font-weight: 900;
+}
+
+
+/* ---------- Ticket ---------- */
+.ticket {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ticket-producto {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radio-chico);
+  background: var(--fondo-suave);
+}
+
+.ticket-producto .producto-icono {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  font-size: 1.6rem;
+}
+
+.ticket-producto small {
+  display: block;
+  color: var(--texto-suave);
+}
+
+.insumos-venta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--fondo-suave);
+}
+
+.subtitulo-seccion,
+.insumo-opcion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.subtitulo-seccion {
+  padding-bottom: 4px;
+}
+
+.subtitulo-seccion h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.subtitulo-seccion span,
+.insumo-opcion small {
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+}
+
+.insumo-opcion {
+  padding: 8px 0;
+  border-top: 1px solid var(--borde);
+}
+
+.insumo-opcion small {
+  display: block;
+  margin-top: 3px;
+}
+
+.control-cantidad {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-cantidad button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--borde);
+  border-radius: 50%;
+  background: var(--fondo);
+  color: var(--texto);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.control-cantidad button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.control-cantidad strong {
+  min-width: 18px;
+  text-align: center;
+}
+
+.ticket-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+/* Cantidad y botón para pasar el producto al ticket */
+.agregar-linea {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: end;
+  gap: 12px;
+}
+
+.ticket-lineas {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ticket-lineas li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--borde);
+}
+
+.ticket-lineas small {
+  display: block;
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+}
+
+.ticket-lineas .quitar {
+  border: 0;
+  background: none;
+  color: var(--rojo);
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Línea punteada como la de un ticket de papel */
+.ticket-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 2px dashed var(--borde);
+}
+
+.ticket-total strong {
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+
+paypal-button {
+  display: block;
+}
+
+
+/* ---------- Celulares ---------- */
+@media (max-width: 860px) {
+  .pos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket {
+    position: static;
+  }
+}
+
+/* Formulario para mandar la factura por correo */
+.envio-factura {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: var(--radio-chico);
+  background: var(--rosa-claro);
+}

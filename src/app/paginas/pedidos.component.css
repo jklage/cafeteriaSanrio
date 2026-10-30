@@ -1,0 +1,68 @@
+.tablero-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: var(--texto-suave);
+  font-weight: 700;
+}
+
+/* Tres columnas, una por estado; en celulares quedan una debajo de otra */
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.columna {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio-grande);
+  background: var(--fondo-suave);
+}
+
+.columna-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-radius: var(--radio-chico);
+}
+
+.columna-titulo h2 {
+  font-size: 1.1rem;
+}
+
+.columna-titulo span {
+  font-weight: 900;
+}
+
+.tarjeta-pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--fondo);
+}
+
+.tarjeta-encabezado {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tarjeta-pedido small {
+  color: var(--texto-suave);
+}
+
+@media (max-width: 860px) {
+  .tablero {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,140 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="kuromi.ico" alt="Kuromi">
+
+  <h1>Reportes de ventas</h1>
+</section>
+
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<section class="panel panel-filtro">
+  <form class="filtro" (ngSubmit)="consultar()">
+    <label class="campo">
+      Desde
+      <input name="desde" type="date" [(ngModel)]="desde" required>
+    </label>
+    <label class="campo">
+      Hasta
+      <input name="hasta" type="date" [(ngModel)]="hasta" required>
+    </label>
+    <button type="submit" class="boton boton-principal">Consultar</button>
+  </form>
+</section>
+
+@if (reporte(); as datos) {
+  <section class="metricas">
+    <article class="metrica metrica-rosa">
+      <span class="metrica-etiqueta">Total vendido</span>
+      <strong class="metrica-valor">{{ datos.totales.total | currency:'MXN':'symbol-narrow' }}</strong>
+    </article>
+
+    <article class="metrica metrica-cielo">
+      <span class="metrica-etiqueta">Tickets</span>
+      <strong class="metrica-valor">{{ datos.totales.tickets }}</strong>
+    </article>
+
+    <article class="metrica metrica-amarillo">
+      <span class="metrica-etiqueta">Ticket promedio</span>
+      <strong class="metrica-valor">{{ datos.totales.ticket_promedio | currency:'MXN':'symbol-narrow' }}</strong>
+    </article>
+  </section>
+
+  <section class="panel resultados">
+    <div class="panel-titulo">
+      <h2>Estado de resultados</h2>
+      <span>Ventas menos compras de insumos del rango</span>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <tbody>
+          <tr>
+            <td>Ingresos por ventas</td>
+            <td class="numero">{{ datos.resultados.ingresos | currency:'MXN':'symbol-narrow' }}</td>
+          </tr>
+          <tr>
+            <td>Egresos por compras de insumos</td>
+            <td class="numero">- {{ datos.resultados.egresos | currency:'MXN':'symbol-narrow' }}</td>
+          </tr>
+          <tr>
+            <td><b>{{ datos.resultados.utilidad >= 0 ? 'Utilidad' : 'Pérdida' }}</b></td>
+            <td class="numero"><b>{{ datos.resultados.utilidad | currency:'MXN':'symbol-narrow' }}</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-titulo">
+      <h2>Ventas por día</h2>
+    </div>
+
+    @for (dia of datos.porDia; track dia.dia) {
+      <div class="barra-fila">
+        <span class="barra-dia">{{ dia.dia + 'T00:00' | date:'dd/MM/yyyy' }}</span>
+        <div class="barra-fondo">
+          <div class="barra" [style.width.%]="anchoBarra(dia.total)"></div>
+        </div>
+        <span class="barra-total">{{ dia.total | currency:'MXN':'symbol-narrow' }} · {{ dia.tickets }} tickets</span>
+      </div>
+    } @empty {
+      <p class="sin-datos">No hubo ventas en estas fechas.</p>
+    }
+  </section>
+
+  <div class="reporte-tablas">
+    <section class="panel">
+      <h2>Productos más vendidos</h2>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="numero">Piezas</th>
+              <th class="numero">Importe</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of datos.productos; track producto.nombre) {
+              <tr>
+                <td><b>{{ producto.nombre }}</b></td>
+                <td class="numero">{{ producto.cantidad }}</td>
+                <td class="numero">{{ producto.importe | currency:'MXN':'symbol-narrow' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="sin-datos">Sin productos vendidos.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Métodos de pago</h2>
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th class="numero">Tickets</th>
+              <th class="numero">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (metodo of datos.metodos; track metodo.metodo_pago) {
+              <tr>
+                <td><b>{{ metodo.metodo_pago }}</b></td>
+                <td class="numero">{{ metodo.tickets }}</td>
+                <td class="numero">{{ metodo.total | currency:'MXN':'symbol-narrow' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="sin-datos">Sin ventas.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+}

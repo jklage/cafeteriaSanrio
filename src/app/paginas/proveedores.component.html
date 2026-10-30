@@ -1,0 +1,90 @@
+<section class="modulo-encabezado">
+  <img class="personaje-encabezado" src="badzmaru.ico" alt="Badtz-Maru">
+
+  <h1>Proveedores</h1>
+</section>
+
+@if (mensaje()) {
+  <div class="mensaje mensaje-exito">{{ mensaje() }}</div>
+}
+@if (error()) {
+  <div class="mensaje mensaje-error">{{ error() }}</div>
+}
+
+<div class="grid-formulario">
+
+  <section class="panel">
+    <div class="panel-titulo">
+      <h2>Proveedores activos</h2>
+      <span>{{ proveedores().length }} registrados</span>
+    </div>
+
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Proveedor</th>
+            <th>Contacto</th>
+            <th class="numero">Insumos</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (proveedor of proveedores(); track proveedor.id_proveedor) {
+            <tr [class.editando]="proveedor.id_proveedor === idEditando()">
+              <td><b>{{ proveedor.nombre }}</b></td>
+              <td>
+                {{ proveedor.contacto ?? 'Sin contacto' }}
+                <span class="detalle">{{ proveedor.telefono }} {{ proveedor.correo }}</span>
+              </td>
+              <td class="numero">{{ proveedor.total_insumos }}</td>
+              <td>
+                <div class="acciones-fila">
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="editar(proveedor)">Editar</button>
+                  <button type="button" class="boton boton-secundario boton-chico" (click)="darDeBaja(proveedor)">Dar de baja</button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="4" class="sin-datos">No hay proveedores registrados.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>{{ idEditando() === null ? 'Registrar proveedor' : 'Editar proveedor' }}</h2>
+
+    <form class="formulario-campos" (ngSubmit)="guardar()" #forma="ngForm">
+      <label class="campo campo-completo">
+        Nombre
+        <input name="nombre" [(ngModel)]="formulario.nombre" placeholder="Lácteos del Valle" minlength="3" required>
+      </label>
+
+      <label class="campo campo-completo">
+        Persona de contacto
+        <input name="contacto" [(ngModel)]="formulario.contacto" placeholder="Opcional">
+      </label>
+
+      <label class="campo">
+        Teléfono
+        <input name="telefono" [(ngModel)]="formulario.telefono" placeholder="555-0100">
+      </label>
+
+      <label class="campo">
+        Correo
+        <input name="correo" type="email" [(ngModel)]="formulario.correo" placeholder="ventas@proveedor.com">
+      </label>
+
+      <div class="acciones campo-completo">
+        <button type="submit" class="boton boton-principal" [disabled]="forma.invalid">
+          {{ idEditando() === null ? 'Registrar' : 'Guardar cambios' }}
+        </button>
+        @if (idEditando() !== null) {
+          <button type="button" class="boton boton-secundario" (click)="cancelar()">Cancelar</button>
+        }
+      </div>
+    </form>
+  </section>
+</div>
